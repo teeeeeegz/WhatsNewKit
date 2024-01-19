@@ -44,10 +44,12 @@ extension WhatsNewView.PrimaryButtonStyle: ButtonStyle {
             #endif
         }
         .foregroundColor(self.primaryAction.foregroundColor)
+        #if os(iOS) || os(macOS)
         .background(self.primaryAction.backgroundColor)
+        #endif
         .cornerRadius(self.layout.footerPrimaryActionButtonCornerRadius)
         .opacity(configuration.isPressed ? 0.5 : 1)
     }
-    
+
 }
 
