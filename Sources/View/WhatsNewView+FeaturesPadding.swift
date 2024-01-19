@@ -3,11 +3,11 @@ import SwiftUI
 // MARK: - WhatsNewView+FeaturesPadding
 
 extension WhatsNewView {
-    
+
     /// The WhatsNewView FeaturesPadding ViewModifier
     struct FeaturesPadding {
-        
-        #if os(iOS)
+
+        #if os(iOS) || os(visionOS)
         /// The Horizontal SizeClass
         @Environment(\.horizontalSizeClass)
         private var horizontalSizeClass
