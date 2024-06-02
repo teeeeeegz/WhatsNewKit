@@ -4,28 +4,28 @@ import SwiftUI
 
 /// A WhatsNewView
 public struct WhatsNewView {
-    
+
     // MARK: Properties
-    
+
     /// The WhatsNew object
     private let whatsNew: WhatsNew
-    
+
     /// The WhatsNewVersionStore
     private let whatsNewVersionStore: WhatsNewVersionStore?
-    
+
     /// The WhatsNew Layout
     private let layout: WhatsNew.Layout
-    
+
     /// The View that is presented by the SecondaryAction
     @State
     private var secondaryActionPresentedView: WhatsNew.SecondaryAction.Action.PresentedView?
-    
+
     /// The PresentationMode
     @Environment(\.presentationMode)
     private var presentationMode
-    
+
     // MARK: Initializer
-    
+
     /// Creates a new instance of `WhatsNewView`
     /// - Parameters:
     ///   - whatsNew: The WhatsNew object
@@ -40,13 +40,13 @@ public struct WhatsNewView {
         self.whatsNewVersionStore = versionStore
         self.layout = layout
     }
-    
+
 }
 
 // MARK: - View
 
 extension WhatsNewView: View {
-    
+
     /// The content and behavior of the view.
     public var body: some View {
         ZStack {
@@ -88,22 +88,21 @@ extension WhatsNewView: View {
             #if os(iOS)
             .alwaysBounceVertical(false)
             #endif
-            // Footer
-            VStack {
-                Spacer()
-                self.footer
-                    .modifier(FooterPadding())
-                    #if os(iOS)
-                    .background(
-                        UIVisualEffectView
-                            .Representable()
-                            .edgesIgnoringSafeArea(.horizontal)
-                            .padding(self.layout.footerVisualEffectViewPadding)
-                    )
-                    #endif
+          
+            #if os(macOS)
+            .safeAreaInset(edge: .bottom) {
+              self.footerSection
             }
-            .edgesIgnoringSafeArea(.bottom)
+            #endif
+          
+            #if os(iOS) || os(visionOS)
+            self.footerSection
+            #endif
         }
+        #if os(macOS)
+        .frame(width: 500)
+        .frame(minHeight: 400)
+        #endif
         .sheet(
             item: self.$secondaryActionPresentedView,
             content: { $0.view }
@@ -116,12 +115,32 @@ extension WhatsNewView: View {
         }
     }
     
+    private var footerSection: some View {
+      // Footer
+      VStack {
+          Spacer()
+          self.footer
+              .modifier(FooterPadding())
+              #if os(iOS)
+              .background(
+                  UIVisualEffectView
+                      .Representable()
+                      .edgesIgnoringSafeArea(.horizontal)
+                      .padding(self.layout.footerVisualEffectViewPadding)
+              )
+              #elseif os(macOS)
+              .frame(maxWidth: .infinity)
+              .background(.background)
+              #endif
+      }
+      .edgesIgnoringSafeArea(.bottom)
+    }
 }
 
 // MARK: - Title
 
 private extension WhatsNewView {
-    
+
     /// The Title View
     var title: some View {
         Text(
@@ -131,13 +150,13 @@ private extension WhatsNewView {
         .multilineTextAlignment(.center)
         .fixedSize(horizontal: false, vertical: true)
     }
-    
+
 }
 
 // MARK: - Feature
 
 private extension WhatsNewView {
-    
+
     /// The Feature View
     /// - Parameter feature: A WhatsNew Feature
     func feature(
@@ -171,13 +190,13 @@ private extension WhatsNewView {
             .multilineTextAlignment(.leading)
         }.accessibilityElement(children: .combine)
     }
-    
+
 }
 
 // MARK: - Footer
 
 private extension WhatsNewView {
-    
+
     /// The Footer View
     var footer: some View {
         VStack(
@@ -226,17 +245,21 @@ private extension WhatsNewView {
                 Text(
                     whatsNewText: self.whatsNew.primaryAction.title
                 )
+                .accentColor(.primary)
+                .frame(minWidth: 150)
             }
+            #if os(iOS)
             .buttonStyle(
                 PrimaryButtonStyle(
                     primaryAction: self.whatsNew.primaryAction,
                     layout: self.layout
                 )
             )
-            #if os(macOS)
+            #elseif os(macOS)
             .keyboardShortcut(.defaultAction)
+            .controlSize(.large)
             #endif
         }
     }
-    
+
 }

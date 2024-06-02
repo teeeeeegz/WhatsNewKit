@@ -3,7 +3,7 @@ import SwiftUI
 // MARK: - Text+init(whatsNewText:)
 
 extension Text {
-    
+
     /// Creates a new instance of `Text` from a `WhatsNew.Text` instance
     /// - Parameter whatsNewText: The WhatsNew Text
     init(
@@ -24,5 +24,5 @@ extension Text {
             )
         }
     }
-    
+
 }
