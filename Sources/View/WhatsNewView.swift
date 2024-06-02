@@ -177,7 +177,11 @@ private extension WhatsNewView {
                 Text(
                     whatsNewText: feature.title
                 )
+                #if os(macOS)
+                .font(.headline.weight(.semibold))
+                #else
                 .font(.subheadline.weight(.semibold))
+                #endif
                 .foregroundColor(.primary)
                 .fixedSize(horizontal: false, vertical: true)
                 Text(
